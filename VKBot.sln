@@ -1,0 +1,52 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VkBot.BotApi", "VkBot.BotApi\VkBot.BotApi.csproj", "{0FD02BF8-A780-47B1-9DE8-728D90908D82}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VkBot.ConsoleTestApp", "VkBot.ConsoleTestApp\VkBot.ConsoleTestApp.csproj", "{E8D0D9CC-4B0A-4E2E-9281-A1D33E6C22E4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VKWordCounter.UI", "VKWordCounter.UI\VKWordCounter.UI.csproj", "{6FC69E7A-C590-4327-98EB-1DE15BB36D40}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VkBot.SettingsManager", "VkBot.SettingsManager\VkBot.SettingsManager.csproj", "{BA1321C6-EC56-456E-BC49-7F29937F2253}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VkBot.Bot", "VkBot.Bot\VkBot.Bot.csproj", "{D327264A-4F1C-4D2C-A8AD-8B307CBFAECC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VkBot.UI", "VkBot.UI\VkBot.UI.csproj", "{32EEDDAC-AB41-444B-8B68-A8EE3E4CDFD5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0FD02BF8-A780-47B1-9DE8-728D90908D82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0FD02BF8-A780-47B1-9DE8-728D90908D82}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0FD02BF8-A780-47B1-9DE8-728D90908D82}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0FD02BF8-A780-47B1-9DE8-728D90908D82}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8D0D9CC-4B0A-4E2E-9281-A1D33E6C22E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8D0D9CC-4B0A-4E2E-9281-A1D33E6C22E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8D0D9CC-4B0A-4E2E-9281-A1D33E6C22E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8D0D9CC-4B0A-4E2E-9281-A1D33E6C22E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6FC69E7A-C590-4327-98EB-1DE15BB36D40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FC69E7A-C590-4327-98EB-1DE15BB36D40}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6FC69E7A-C590-4327-98EB-1DE15BB36D40}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FC69E7A-C590-4327-98EB-1DE15BB36D40}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA1321C6-EC56-456E-BC49-7F29937F2253}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA1321C6-EC56-456E-BC49-7F29937F2253}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA1321C6-EC56-456E-BC49-7F29937F2253}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA1321C6-EC56-456E-BC49-7F29937F2253}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D327264A-4F1C-4D2C-A8AD-8B307CBFAECC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D327264A-4F1C-4D2C-A8AD-8B307CBFAECC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D327264A-4F1C-4D2C-A8AD-8B307CBFAECC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D327264A-4F1C-4D2C-A8AD-8B307CBFAECC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32EEDDAC-AB41-444B-8B68-A8EE3E4CDFD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32EEDDAC-AB41-444B-8B68-A8EE3E4CDFD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32EEDDAC-AB41-444B-8B68-A8EE3E4CDFD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32EEDDAC-AB41-444B-8B68-A8EE3E4CDFD5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
