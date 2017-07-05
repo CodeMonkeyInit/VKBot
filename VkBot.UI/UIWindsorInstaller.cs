@@ -2,6 +2,9 @@
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
 using VkBot.Bot;
+using VkBot.BotApi;
+using VkBot.Functions;
+using VkBot.Functions.UrbanDictionaryApi;
 using VkBot.SettingsManager;
 
 namespace VkBot.UI
@@ -16,6 +19,10 @@ namespace VkBot.UI
 
             container.Register(
                 Component.For<IVkSettingsManager>().ImplementedBy<VkSettingsManager>()
+            );
+
+            container.Register(
+                Component.For<IBotFunctionsInstaller>().ImplementedBy<BotFunctionsInstaller>()
             );
         }
     }

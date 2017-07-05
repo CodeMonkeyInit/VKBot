@@ -73,7 +73,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BotFunctionsInstaller.cs" />
     <Compile Include="BotTask.cs" />
     <Compile Include="BotTaskHandler.cs" />
     <Compile Include="BotWindsorInstaller.cs" />
@@ -81,10 +80,8 @@
     <Compile Include="IBotFunctionsInstaller.cs" />
     <Compile Include="IVkBot.cs" />
     <Compile Include="ResponseHandler.cs" />
-    <Compile Include="UrbanDictionaryResponse.cs" />
     <Compile Include="VkBot.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WordDefinition.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

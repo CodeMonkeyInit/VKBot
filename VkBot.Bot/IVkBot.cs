@@ -1,4 +1,5 @@
 ﻿using System;
+using VkBot.BotApi;
 
 namespace VkBot.Bot
 {
@@ -13,6 +14,7 @@ namespace VkBot.Bot
         void Start(TimeSpan timeBetweenChecks);
         void RegisterOnUnknownCommandHandler(BotTaskHandler taskHandler);
         void RegisterGreetingTaskHandler(BotTaskHandler taskHandler);
+        void Install(IBotFunctionsInstaller installer);
         void Stop();
     }
 }

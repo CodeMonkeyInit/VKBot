@@ -11,8 +11,6 @@ namespace VkBot.SettingsManager
     public class VkSettingsManager : IVkSettingsManager
     {
         private const string SettingsFilename = "settings.ini";
-
-        private Settings _settings;
         
         public Settings Settings => GetSettings();
 

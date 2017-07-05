@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Castle.Windsor;
 using VkBot.Bot;
+using VkBot.BotApi;
 using VkBot.SettingsManager;
 
 namespace VkBot.UI
@@ -42,6 +43,8 @@ namespace VkBot.UI
         private void InitializeBot(string accessToken)
         {
             _bot = _container.Resolve<IVkBot>(new {accessToken});
+
+            _bot.Install(_container.Resolve<IBotFunctionsInstaller>());
         }
 
         private void SuccessfullyLoggedIn(string accessToken)

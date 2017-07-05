@@ -14,12 +14,6 @@ namespace VkBot.Bot
                     .For<IVkApi>()
                     .ImplementedBy<VkApi>()
             );
-
-            container.Register(
-                Component
-                    .For<IBotFunctionsInstaller>()
-                    .ImplementedBy<BotFunctionsInstaller>()
-            );
         }
     }
 }

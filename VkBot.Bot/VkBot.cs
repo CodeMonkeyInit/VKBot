@@ -31,9 +31,9 @@ namespace VkBot.Bot
 
         private readonly char[] _wordSeparators = {' ', ',', '.', '!', '?'};
 
-        public readonly string[] Greetings = {"прив", "здравству", "хай", "hello", "hi", "ку", "дорова", "дратути", "спокойной", "пока"};
+        private const string LoggerPath = "logs/log.txt";
 
-        public readonly string[] Names = {"бот", "алеша", "алёша", "алексей", "олеша", "alosha", "ололоша", "bot"};
+        private readonly object _logger = new object();
 
         private const int NameLength = 1;
 
@@ -41,20 +41,23 @@ namespace VkBot.Bot
         
         private CancellationTokenSource _cancellationTokenSource;
 
+        public readonly string[] Greetings = { "привет", "здравствуйте", "прив" , "здравствуй", "хай", "hello", "hi", "ку", "дорова", "дратути", "спокойной", "пока"};
+
+        public readonly string[] Names = { "бот", "алеша", "алёша", "алексей", "олеша", "alosha", "ололоша", "bot" };
+
         public readonly IVkApi _api;
 
         public bool IsAuthorized => _api.IsAuthorized;
 
         public bool BotWorking => _botMessagesCheckTask != null;
 
+        
         public VkBot(string accessToken)
         {
             _container = new WindsorContainer().Install(new VkApiWindsorIntaller());
             _api = _container.Resolve<IVkApi>();
             _api.Login(accessToken);
-
-            new BotFunctionsInstaller().Install(this);
-
+            
             _mapper = new Mapper(new MapperConfiguration(config => config.CreateMap<Message, BotTask>()));
 
             if (!IsAuthorized)
@@ -109,6 +112,14 @@ namespace VkBot.Bot
             return false;
         }
 
+        void LogException(Exception e)
+        {
+            lock (_logger)
+            {
+                File.AppendAllText(LoggerPath, $"{DateTime.Now}:\n Exception :{e.Message}\n StackTrace: \n{e.StackTrace}\n");
+            }
+        }
+
         private async Task HandleTasksAsync(HandleTaskArguments handleTaskArguments)
         {
             if (handleTaskArguments.Handler != null)
@@ -130,7 +141,7 @@ namespace VkBot.Bot
                     }
                     catch (Exception e)
                     {
-                        
+                        LogException(e);
                     }
 
                     handleTaskArguments.UnknownCommandHandler?.Invoke(botTask, SendResponse, _api);
@@ -138,50 +149,60 @@ namespace VkBot.Bot
             }
         }
 
-
+        
         private async Task PerformMessageChecksAsync(CancellationToken cancelationToken, TimeSpan timeSpanBetweenChecks)
         {
             while (true)
             {
                 cancelationToken.ThrowIfCancellationRequested();
 
-                ICollection<Message> unreadMessages = await _api.GetUnreadMessagesAsync();
-
-                List<Message> directMessages = unreadMessages.Where(RecievedDirectMessage).ToList();
-
-                List<Message> messagesWhereBotWasCalled = unreadMessages.Where(BotWasCalledInChat).ToList();
-
-                List<Message> messagesWhereSomeoneInChatGreeted = unreadMessages.Where(SomeoneInChatGreeted).ToList();
-
-                List<BotTask> botTasks = _mapper.Map<List<BotTask>>(messagesWhereBotWasCalled);
-
-                List<BotTask> greetingTasks = _mapper.Map<List<BotTask>>(messagesWhereSomeoneInChatGreeted);
-
-                List<BotTask> botDirectTasks = _mapper.Map<List<BotTask>>(directMessages);
-
-                await HandleTasksAsync(new HandleTaskArguments
+                try
                 {
-                    Handler = _taskHandler,
-                    BotTasks = botDirectTasks,
-                    CommandsOffset = NoOffset,
-                    UnknownCommandHandler = _onUnknownCommandHandler
-                });
+                    ICollection<Message> unreadMessages = await _api.GetUnreadMessagesAsync();
 
-                await HandleTasksAsync(new HandleTaskArguments
+                    List<Message> directMessages = unreadMessages.Where(RecievedDirectMessage).ToList();
+
+                    List<Message> messagesWhereBotWasCalled = unreadMessages.Where(BotWasCalledInChat).ToList();
+
+                    List<Message> messagesWhereSomeoneInChatGreeted = unreadMessages.Where(SomeoneInChatGreeted).ToList();
+
+                    List<BotTask> botTasks = _mapper.Map<List<BotTask>>(messagesWhereBotWasCalled);
+
+                    List<BotTask> greetingTasks = _mapper.Map<List<BotTask>>(messagesWhereSomeoneInChatGreeted);
+
+                    List<BotTask> botDirectTasks = _mapper.Map<List<BotTask>>(directMessages);
+
+                    await HandleTasksAsync(new HandleTaskArguments
+                    {
+                        Handler = _taskHandler,
+                        BotTasks = botDirectTasks,
+                        CommandsOffset = NoOffset,
+                        UnknownCommandHandler = _onUnknownCommandHandler
+                    });
+
+                    await HandleTasksAsync(new HandleTaskArguments
+                    {
+                        Handler = _taskHandler,
+                        BotTasks = botTasks,
+                        CommandsOffset = NameLength,
+                        UnknownCommandHandler = _onUnknownCommandHandler
+                    });
+
+                    await HandleTasksAsync(new HandleTaskArguments
+                    {
+                        Handler = _greetingTaskHandler,
+                        BotTasks = greetingTasks,
+                        CommandsOffset = NoOffset
+                    });
+
+                }
+                catch (Exception e)
                 {
-                    Handler = _taskHandler,
-                    BotTasks = botTasks,
-                    CommandsOffset = NameLength,
-                    UnknownCommandHandler = _onUnknownCommandHandler
-                });
+                    //VkApi Fucked
 
-                await HandleTasksAsync(new HandleTaskArguments
-                {
-                    Handler = _greetingTaskHandler,
-                    BotTasks = greetingTasks,
-                    CommandsOffset = NoOffset
-                });
-
+                    LogException(e);
+                }
+                
                 await Task.Delay(timeSpanBetweenChecks, cancelationToken);
             }
         }
@@ -209,6 +230,11 @@ namespace VkBot.Bot
         public void RegisterGreetingTaskHandler(BotTaskHandler taskHandler)
         {
             _greetingTaskHandler = taskHandler;
+        }
+
+        public void Install(IBotFunctionsInstaller installer)
+        {
+            installer.Install(this);
         }
 
         public void Start(TimeSpan timeBetweenChecks)

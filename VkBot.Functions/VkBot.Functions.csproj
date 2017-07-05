@@ -4,16 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{E8D0D9CC-4B0A-4E2E-9281-A1D33E6C22E4}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>VkBot.ConsoleTestApp</RootNamespace>
-    <AssemblyName>VkBot.ConsoleTestApp</AssemblyName>
+    <ProjectGuid>{4CC5BD08-8087-4B69-A287-6FEACC501689}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VkBot.Functions</RootNamespace>
+    <AssemblyName>VkBot.Functions</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,7 +22,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -34,6 +32,12 @@
   <ItemGroup>
     <Reference Include="AngleSharp, Version=0.9.9.0, Culture=neutral, PublicKeyToken=e83494dcdc6d31ea, processorArchitecture=MSIL">
       <HintPath>..\packages\AngleSharp.0.9.9\lib\net45\AngleSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Flurl, Version=2.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Flurl.2.3.0\lib\portable40-net40+sl5+win8+wp8+wpa81\Flurl.dll</HintPath>
+    </Reference>
+    <Reference Include="Flurl.Http, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Flurl.Http.1.1.2\lib\net45\Flurl.Http.dll</HintPath>
     </Reference>
     <Reference Include="JetBrains.Annotations, Version=10.4.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <HintPath>..\packages\JetBrains.Annotations.10.4.0\lib\net\JetBrains.Annotations.dll</HintPath>
@@ -60,22 +64,40 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="BotFunctionsInstaller.cs" />
+    <Compile Include="CallByNameFunction.cs" />
+    <Compile Include="FindFunction.cs" />
+    <Compile Include="GeniousApi\GeniousApiResponse.cs" />
+    <Compile Include="GeniousApi\GeniusSearchResponse.cs" />
+    <Compile Include="GeniousApi\Hit.cs" />
+    <Compile Include="GlebSpecialFunction.cs" />
+    <Compile Include="GreetingFunction.cs" />
+    <Compile Include="JokeApi\Joke.cs" />
+    <Compile Include="LyricsFunction.cs" />
+    <Compile Include="JokeFunction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-    <None Include="packages.config" />
+    <Compile Include="Quote.cs" />
+    <Compile Include="GeniousApi\Song.cs" />
+    <Compile Include="QuoteFunction.cs" />
+    <Compile Include="HelpFunction.cs" />
+    <Compile Include="RandomArrayElement.cs" />
+    <Compile Include="UrbanDictionaryApi\UrbanDictionaryResponse.cs" />
+    <Compile Include="UrbanDictionaryApi\WordDefinition.cs" />
+    <Compile Include="UrbanDictionaryFunction.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VkBot.BotApi\VkBot.BotApi.csproj">
-      <Project>{0FD02BF8-A780-47B1-9DE8-728D90908D82}</Project>
+      <Project>{0fd02bf8-a780-47b1-9de8-728d90908d82}</Project>
       <Name>VkBot.BotApi</Name>
     </ProjectReference>
-    <ProjectReference Include="..\VkBot.Functions\VkBot.Functions.csproj">
-      <Project>{4CC5BD08-8087-4B69-A287-6FEACC501689}</Project>
-      <Name>VkBot.Functions</Name>
+    <ProjectReference Include="..\VkBot.Bot\VkBot.Bot.csproj">
+      <Project>{d327264a-4f1c-4d2c-a8ad-8b307cbfaecc}</Project>
+      <Name>VkBot.Bot</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

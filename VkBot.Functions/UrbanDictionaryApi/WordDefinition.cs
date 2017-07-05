@@ -1,4 +1,4 @@
-namespace VkBot.Bot
+namespace VkBot.Functions.UrbanDictionaryApi
 {
     public class WordDefinition
     {

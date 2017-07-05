@@ -114,6 +114,10 @@
       <Project>{D327264A-4F1C-4D2C-A8AD-8B307CBFAECC}</Project>
       <Name>VkBot.Bot</Name>
     </ProjectReference>
+    <ProjectReference Include="..\VkBot.Functions\VkBot.Functions.csproj">
+      <Project>{4cc5bd08-8087-4b69-a287-6feacc501689}</Project>
+      <Name>VkBot.Functions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\VkBot.SettingsManager\VkBot.SettingsManager.csproj">
       <Project>{ba1321c6-ec56-456e-bc49-7f29937f2253}</Project>
       <Name>VkBot.SettingsManager</Name>
