@@ -66,13 +66,13 @@ namespace VkBot.Bot
             }
         }
 
-        private bool FindSubstringsInMessageFirstWord(Message message, string[] substrings)
+        private bool FindWordsStartingWithSubstringsInFirstWord(Message message, string[] substrings)
         {
             var messageLowercase = message.Body.Trim().Split(' ')[0].ToLower();
 
             foreach (string substring in substrings)
             {
-                bool contains = messageLowercase.Contains(substring);
+                bool contains = messageLowercase.StartsWith(substring);
 
                 if (contains)
                 {
@@ -85,7 +85,7 @@ namespace VkBot.Bot
 
         private bool BotWasCalledInChat(Message message)
         {
-            if (FindSubstringsInMessageFirstWord(message, Names) && message.ChatId != null)
+            if (FindWordsStartingWithSubstringsInFirstWord(message, Names) && message.ChatId != null)
             {
                 return true;
             }
@@ -95,7 +95,7 @@ namespace VkBot.Bot
 
         private bool SomeoneInChatGreeted(Message message)
         {
-            if (FindSubstringsInMessageFirstWord(message, Greetings) && message.ChatId != null)
+            if (FindWordsStartingWithSubstringsInFirstWord(message, Greetings) && message.ChatId != null)
             {
                 return true;
             }
@@ -116,7 +116,8 @@ namespace VkBot.Bot
         {
             lock (_logger)
             {
-                File.AppendAllText(LoggerPath, $"{DateTime.Now}:\n Exception :{e.Message}\n StackTrace: \n{e.StackTrace}\n");
+                File.AppendAllText(LoggerPath, 
+                    $"{DateTime.Now}:\n Exception :{e.Message}\n StackTrace: \n{e.StackTrace}\n");
             }
         }
 
@@ -172,28 +173,32 @@ namespace VkBot.Bot
 
                     List<BotTask> botDirectTasks = _mapper.Map<List<BotTask>>(directMessages);
 
-                    await HandleTasksAsync(new HandleTaskArguments
+                    Task directMessagesTasks = HandleTasksAsync(new HandleTaskArguments
                     {
                         Handler = _taskHandler,
                         BotTasks = botDirectTasks,
                         CommandsOffset = NoOffset,
                         UnknownCommandHandler = _onUnknownCommandHandler
                     });
-
-                    await HandleTasksAsync(new HandleTaskArguments
+                    
+                    Task groupChatsTasks = HandleTasksAsync(new HandleTaskArguments
                     {
                         Handler = _taskHandler,
                         BotTasks = botTasks,
                         CommandsOffset = NameLength,
                         UnknownCommandHandler = _onUnknownCommandHandler
                     });
-
-                    await HandleTasksAsync(new HandleTaskArguments
+                    
+                    Task grettingTasks = HandleTasksAsync(new HandleTaskArguments
                     {
                         Handler = _greetingTaskHandler,
                         BotTasks = greetingTasks,
                         CommandsOffset = NoOffset
                     });
+
+                    await directMessagesTasks;
+                    await groupChatsTasks;
+                    await grettingTasks;
 
                 }
                 catch (Exception e)
@@ -210,6 +215,14 @@ namespace VkBot.Bot
 
         public async void SendResponse(BotResponse response)
         {
+            if (response.Response == null)
+            {
+                var exception = new Exception($"One of the messagess is null id ={response.PeerId}");
+
+                LogException(exception);
+                return;
+            }
+
             await Task.Run(() => _api.PostMessage(new MessagesSendParams
             {
                 PeerId = response.PeerId,

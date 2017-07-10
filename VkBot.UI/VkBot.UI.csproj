@@ -122,10 +122,6 @@
       <Project>{ba1321c6-ec56-456e-bc49-7f29937f2253}</Project>
       <Name>VkBot.SettingsManager</Name>
     </ProjectReference>
-    <ProjectReference Include="..\VKWordCounter.UI\VKWordCounter.UI.csproj">
-      <Project>{6fc69e7a-c590-4327-98eb-1de15bb36d40}</Project>
-      <Name>VKWordCounter.UI</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

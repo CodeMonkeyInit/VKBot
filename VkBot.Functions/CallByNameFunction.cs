@@ -10,11 +10,18 @@ namespace VkBot.Functions
 {
     public partial class BotFunctionsInstaller
     {
+        public const int NamePosition = -1;
+
         public async Task CalledByName(BotTask botTask, ResponseHandler responseHandler, IVkApi vkApi)
         {
+            if (NamePosition + botTask.Offset < 0 || botTask.WasHandled || botTask.BodySplitted.Length > 1)
+            {
+                return;
+            }
+
             foreach (string botName in botTask.BotNames)
             {
-                if (botTask.BodySplitted[CommandPosition] == botName)
+                if (botTask.BodySplitted[NamePosition + botTask.Offset] == botName)
                 {
                     botTask.WasHandled = true;
 

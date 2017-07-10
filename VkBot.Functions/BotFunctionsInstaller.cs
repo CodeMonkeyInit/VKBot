@@ -62,6 +62,24 @@ namespace VkBot.Functions
             await Task.Run(() => responseHandler(botResponse));
         }
 
+        public async Task WhatIsLove(BotTask botTask, ResponseHandler responseHandler, IVkApi vkApi)
+        {
+            if (botTask.Offset + CommandPosition < botTask.Body.Length &&
+                botTask.BodySplitted[CommandPosition + botTask.Offset].Contains("вячеслав"))
+            {
+                botTask.WasHandled = true;
+
+                var botResponse = new BotResponse
+                {
+                    PeerId = botTask.PeerId,
+                    Response = "Baby don\'t hurt me\nDon\'t hurt me\nNo more"
+                };
+                
+                await Task.Run(() => responseHandler(botResponse));
+            }
+            
+        }
+
         public async Task CommandUnknown(BotTask botTask, ResponseHandler responseHandler, IVkApi vkApi)
         {
             if (!botTask.WasHandled)
@@ -90,6 +108,7 @@ namespace VkBot.Functions
             bot.RegisterTaskHandler(GlebSpecial);
             bot.RegisterTaskHandler(Help);
             bot.RegisterTaskHandler(CalledByName);
+            bot.RegisterTaskHandler(WhatIsLove);
 
             bot.RegisterGreetingTaskHandler(Greeting);
 

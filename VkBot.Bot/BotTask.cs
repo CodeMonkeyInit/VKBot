@@ -17,7 +17,6 @@ namespace VkBot.Bot
         /// Сообщение
         /// </summary>
         public string Body { get; set; }
-
         /// <summary>
         /// Тело сообщения поделенное на части
         /// </summary>

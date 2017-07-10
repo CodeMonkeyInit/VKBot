@@ -11,8 +11,8 @@ namespace VkBot.Functions
         {
             string[] botTaskBodySplitted = botTask.BodySplitted;
 
-            if (botTaskBodySplitted[CommandPosition].Contains("помо") ||
-                botTaskBodySplitted[CommandPosition].Contains("help"))
+            if (botTaskBodySplitted[CommandPosition + botTask.Offset].Contains("помо") ||
+                botTaskBodySplitted[CommandPosition + botTask.Offset].Contains("help"))
             {
                 var botResponse = new BotResponse()
                 {

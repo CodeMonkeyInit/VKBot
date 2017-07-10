@@ -8,11 +8,11 @@ namespace VkBot.Functions
 {
     public static class RandomArrayElement
     {
-        public static string RandomElement(this String[] strings)
+        public static T RandomElement<T>(this T[] array)
         {
             var random = new Random();
 
-            return strings[random.Next(strings.Length)];
+            return array[random.Next(array.Length)];
         }
     }
 }
