@@ -166,7 +166,7 @@ namespace VkBot.BotApi
                 })
                 .ReceiveString();
 
-            var messages = JsonConvert.DeserializeObject<VkMessagesResponse>(messagesJson).Messages;
+            VkMessages messages = JsonConvert.DeserializeObject<VkMessagesResponse>(messagesJson).Messages;
 
             return messages.Count;
         }

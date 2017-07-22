@@ -15,7 +15,7 @@ using VkNet.Model.RequestParams;
 
 namespace VkBot.Bot
 {
-    public class VkBot : IVkBot
+    public class VkBot : IVkBot, IDisposable
     {
         private readonly IWindsorContainer _container;
 
@@ -57,7 +57,7 @@ namespace VkBot.Bot
             _container = new WindsorContainer().Install(new VkApiWindsorIntaller());
             _api = _container.Resolve<IVkApi>();
             _api.Login(accessToken);
-            
+
             _mapper = new Mapper(new MapperConfiguration(config => config.CreateMap<Message, BotTask>()));
 
             if (!IsAuthorized)
@@ -284,6 +284,12 @@ namespace VkBot.Bot
 
             _botMessagesCheckTask.Dispose();
             _botMessagesCheckTask = null;
+        }
+
+        public void Dispose()
+        {
+            _botMessagesCheckTask?.Dispose();
+            _cancellationTokenSource?.Dispose();
         }
     }
 }
