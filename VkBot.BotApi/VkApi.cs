@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Castle.Windsor;
 using Flurl.Http;
 using Newtonsoft.Json;
 using VkBot.BotApi.Messages;
+using VkBot.IocContainer;
 using VkNet;
 using VkNet.Enums;
 using VkNet.Enums.Filters;
@@ -27,8 +27,8 @@ namespace VkBot.BotApi
 
         private const string SearchMethodUrl = "https://api.vk.com/method/messages.search";
 
-        public IWindsorContainer Container { get; } = new WindsorContainer()
-            .Install(new VkApiWindsorIntaller());
+        public IContainer Container { get; } = new Container()
+            .Install(new VkApiContainerIntaller());
 
         public bool IsAuthorized => _vkApi.IsAuthorized;
 

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Castle.Windsor;
 using VkBot.BotApi.Messages;
+using VkBot.IocContainer;
 using VkNet.Model;
 using VkNet.Model.RequestParams;
 
@@ -10,7 +10,7 @@ namespace VkBot.BotApi
 {
     public interface IVkApi
     {
-        IWindsorContainer Container { get; }
+        IContainer Container { get; }
 
         bool IsAuthorized { get; }
 

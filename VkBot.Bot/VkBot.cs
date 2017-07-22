@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections;
+﻿﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using Castle.Windsor;
 using VkBot.BotApi;
-using VkBot.BotApi.Messages;
+using VkBot.IocContainer;
 using VkNet.Model;
 using VkNet.Model.RequestParams;
 
@@ -17,53 +13,47 @@ namespace VkBot.Bot
 {
     public class VkBot : IVkBot, IDisposable
     {
-        private readonly IWindsorContainer _container;
+        private readonly IContainer _container;
 
         private readonly IMapper _mapper;
 
         private BotTaskHandler _taskHandler;
-
         private BotTaskHandler _onUnknownCommandHandler;
-
         private BotTaskHandler _greetingTaskHandler;
+
+        private readonly ILogger _logger;
 
         private Task _botMessagesCheckTask;
 
         private readonly char[] _wordSeparators = {' ', ',', '.', '!', '?'};
 
-        private const string LoggerPath = "logs/log.txt";
-
-        private readonly object _logger = new object();
-
         private const int NameLength = 1;
-
         private const int NoOffset = 0;
         
         private CancellationTokenSource _cancellationTokenSource;
 
         public readonly string[] Greetings = { "привет", "здравствуйте", "прив" , "здравствуй", "хай", "hello", "hi", "ку", "дорова", "дратути", "спокойной", "пока"};
-
         public readonly string[] Names = { "бот", "алеша", "алёша", "алексей", "олеша", "alosha", "ололоша", "bot" };
 
-        public readonly IVkApi _api;
+        public readonly IVkApi Api;
+        
 
-        public bool IsAuthorized => _api.IsAuthorized;
+        public bool IsAuthorized => Api.IsAuthorized;
 
         public bool BotWorking => _botMessagesCheckTask != null;
 
-        
-        public VkBot(string accessToken)
+        public VkBot()
         {
-            _container = new WindsorContainer().Install(new VkApiWindsorIntaller());
-            _api = _container.Resolve<IVkApi>();
-            _api.Login(accessToken);
-
-            _mapper = new Mapper(new MapperConfiguration(config => config.CreateMap<Message, BotTask>()));
-
-            if (!IsAuthorized)
-            {
-                throw new ArgumentException($"{nameof(accessToken)} invalid");
-            }
+            _container = new Container().Install(new BotContainerInstaller());
+            Api = _container.Resolve<IVkApi>();
+            _logger = _container.Resolve<ILogger>();
+            _mapper = new Mapper(new MapperConfiguration(config => config
+                .CreateMap<Message, BotTask>()));
+        }
+        
+        public VkBot(string accessToken): this()
+        {
+            SetAccessToken(accessToken);
         }
 
         private bool FindWordsStartingWithSubstringsInFirstWord(Message message, string[] substrings)
@@ -81,6 +71,15 @@ namespace VkBot.Bot
             }
 
             return false;
+        }
+        
+        private void CheckIfAuthorized()
+        {
+            if (!IsAuthorized)
+            {
+                throw new InvalidOperationException("Bot is not authorized. "
+                                                    + "Consider calling Authorize function first.");
+            }
         }
 
         private bool BotWasCalledInChat(Message message)
@@ -112,15 +111,6 @@ namespace VkBot.Bot
             return false;
         }
 
-        void LogException(Exception e)
-        {
-            lock (_logger)
-            {
-                File.AppendAllText(LoggerPath, 
-                    $"{DateTime.Now}:\n Exception :{e.Message}\n StackTrace: \n{e.StackTrace}\n");
-            }
-        }
-
         private async Task HandleTasksAsync(HandleTaskArguments handleTaskArguments)
         {
             if (handleTaskArguments.Handler != null)
@@ -138,19 +128,18 @@ namespace VkBot.Bot
 
                     try
                     {
-                        await handleTaskArguments.Handler(botTask, SendResponse, _api);
+                        await handleTaskArguments.Handler(botTask, SendResponse, Api);
                     }
                     catch (Exception e)
                     {
-                        LogException(e);
+                        _logger.LogException(e);
                     }
 
-                    handleTaskArguments.UnknownCommandHandler?.Invoke(botTask, SendResponse, _api);
+                    handleTaskArguments.UnknownCommandHandler?.Invoke(botTask, SendResponse, Api);
                 }
             }
         }
 
-        
         private async Task PerformMessageChecksAsync(CancellationToken cancelationToken, TimeSpan timeSpanBetweenChecks)
         {
             while (true)
@@ -159,7 +148,7 @@ namespace VkBot.Bot
 
                 try
                 {
-                    ICollection<Message> unreadMessages = await _api.GetUnreadMessagesAsync();
+                    ICollection<Message> unreadMessages = await Api.GetUnreadMessagesAsync();
 
                     List<Message> directMessages = unreadMessages.Where(RecievedDirectMessage).ToList();
 
@@ -204,30 +193,44 @@ namespace VkBot.Bot
                 catch (Exception e)
                 {
                     //VkApi Fucked
-
-                    LogException(e);
+                    _logger.LogException(e);
                 }
                 
                 await Task.Delay(timeSpanBetweenChecks, cancelationToken);
             }
         }
         
-
         public async void SendResponse(BotResponse response)
         {
-            if (response.Response == null)
+            if (string.IsNullOrEmpty(response.Response))
             {
-                var exception = new Exception($"One of the messagess is null id ={response.PeerId}");
+                var exception = new ArgumentException(nameof(response.Response) + "Message is empty");
 
-                LogException(exception);
+                _logger.LogException(exception);
+                
                 return;
             }
 
-            await Task.Run(() => _api.PostMessage(new MessagesSendParams
+            await Task.Run(() => Api.PostMessage(new MessagesSendParams
             {
                 PeerId = response.PeerId,
                 Message = response.Response
             }));
+        }
+
+        public void SetAccessToken(string accessToken)
+        {
+            if (string.IsNullOrWhiteSpace(accessToken))
+            {
+                throw new ArgumentException($"{nameof(accessToken)} invalid");
+            }
+
+            Api.Login(accessToken);
+            
+            if (!IsAuthorized)
+            {
+                throw new ArgumentException($"{nameof(accessToken)} invalid");
+            }
         }
 
         public void RegisterTaskHandler(BotTaskHandler taskHandler)
@@ -252,6 +255,8 @@ namespace VkBot.Bot
 
         public void Start(TimeSpan timeBetweenChecks)
         {
+            CheckIfAuthorized();
+            
             if (_cancellationTokenSource != null && !_cancellationTokenSource.IsCancellationRequested)
             {
                 throw new InvalidOperationException("Bot already started");

@@ -9,6 +9,7 @@ namespace VkBot.Bot
 
         bool BotWorking { get; }
 
+        void SetAccessToken(string accessToken);
         void RegisterTaskHandler(BotTaskHandler taskHandler);
         void SendResponse(BotResponse response);
         void Start(TimeSpan timeBetweenChecks);
