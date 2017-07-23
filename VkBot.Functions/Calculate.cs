@@ -2,7 +2,8 @@
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
-using VkBot.Bot;
+ using Jace;
+ using VkBot.Bot;
 using VkBot.BotApi;
 
 namespace VkBot.Functions
@@ -26,37 +27,22 @@ namespace VkBot.Functions
 
                 botTask.WasHandled = true;
 
-//                string expression = botTask.BodySplitted
-//                    .Skip(expressionPostion)
-//                    .Aggregate((previous, current) => $"{previous}{current}");
-//
-//                string expression = string
-//                    .Join(String.Empty, 
-//                        botTask.BodySplitted, 
-//                        expressionPostion, 
-//                        botTask.BodySplitted.Length - expressionPostion);
-                string expression = String.Empty;
+                string expression = botTask.BodySplitted
+                    .Skip(expressionPostion)
+                    .Aggregate((previous, current) => $"{previous}{current}");
 
-                for (int i = expressionPostion; i < botTask.BodySplitted.Length; i++)
-                {
-                    expression += botTask.BodySplitted[i];
-                }
+                var calculationEngine = new CalculationEngine();
 
-                var dataTable = new DataTable();
-
-                //var mathExpression = new Expression(expression);
-                string result;
-                
                 try
                 {
-                    result = dataTable.Compute(expression, String.Empty).ToString();
-                }
-                catch (Exception e)
-                {
-                    result = "Неверное выражение";
-                }
+                    double result = calculationEngine.Calculate(expression);
 
-                botResponse.Response = $"Ответ: {result}";
+                    botResponse.Response = $"Ответ: {result}";
+                }
+                catch (Exception)
+                {
+                    botResponse.Response = "Неверное выражение";
+                }
 
                 await Task.Run(() => responseHandler(botResponse));
             }

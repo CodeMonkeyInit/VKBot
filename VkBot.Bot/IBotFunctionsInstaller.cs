@@ -1,6 +1,4 @@
-﻿using VkBot.Bot;
-
-namespace VkBot.BotApi
+﻿namespace VkBot.Bot
 {
     public interface IBotFunctionsInstaller
     {

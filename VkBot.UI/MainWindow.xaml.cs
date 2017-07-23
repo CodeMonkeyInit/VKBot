@@ -6,7 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Castle.Windsor;
 using VkBot.Bot;
-using VkBot.BotApi;
+using VkBot.Functions;
 using VkBot.SettingsManager;
 
 namespace VkBot.UI
@@ -16,7 +16,6 @@ namespace VkBot.UI
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly IWindsorContainer _container;
         private IVkBot _bot;
         private readonly IVkSettingsManager _settingsManager;
 
@@ -25,9 +24,8 @@ namespace VkBot.UI
         public MainWindow()
         {
             InitializeComponent();
-
-            _container = new WindsorContainer().Install(new UIWindsorInstaller());
-            _settingsManager = _container.Resolve<IVkSettingsManager>();
+            
+            _settingsManager = new VkSettingsManager();
 
             if (AccessToken == null)
             {
@@ -42,9 +40,9 @@ namespace VkBot.UI
 
         private void InitializeBot(string accessToken)
         {
-            _bot = _container.Resolve<IVkBot>(new {accessToken});
+            _bot = new Bot.VkBot(accessToken);
 
-            _bot.Install(_container.Resolve<IBotFunctionsInstaller>());
+            _bot.Install(new BotFunctionsInstaller());
         }
 
         private void SuccessfullyLoggedIn(string accessToken)

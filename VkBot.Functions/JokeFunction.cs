@@ -4,6 +4,7 @@ using Flurl.Http;
 using Newtonsoft.Json;
 using VkBot.Bot;
 using VkBot.BotApi;
+using VkBot.Functions.JokeApi;
 
 namespace VkBot.Functions
 {

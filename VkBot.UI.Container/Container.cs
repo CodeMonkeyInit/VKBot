@@ -1,10 +1,8 @@
-﻿using Microsoft.Practices.Unity;
-using VkBot.Bot;
-using VkBot.BotApi;
+﻿using VkBot.Bot;
 using VkBot.Functions;
 using VkBot.SettingsManager;
 
-namespace VkBot.UI
+namespace VkBot.UI.Container
 {    
     public class Container
     {

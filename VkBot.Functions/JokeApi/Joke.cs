@@ -1,4 +1,4 @@
-﻿namespace VkBot.Functions
+﻿namespace VkBot.Functions.JokeApi
 {
     public class Joke
     {
