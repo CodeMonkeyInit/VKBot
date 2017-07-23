@@ -109,6 +109,7 @@ namespace VkBot.Functions
             bot.RegisterTaskHandler(Help);
             bot.RegisterTaskHandler(CalledByName);
             bot.RegisterTaskHandler(WhatIsLove);
+            bot.RegisterTaskHandler(Calculate);
 
             bot.RegisterGreetingTaskHandler(Greeting);
 

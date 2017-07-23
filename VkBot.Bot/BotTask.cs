@@ -17,6 +17,7 @@ namespace VkBot.Bot
         /// Сообщение
         /// </summary>
         public string Body { get; set; }
+        
         /// <summary>
         /// Тело сообщения поделенное на части
         /// </summary>
@@ -34,12 +35,12 @@ namespace VkBot.Bot
         {
             get
             {
-                if (ChatId == null)
+                if (!ChatId.HasValue)
                 {
-                    return (long) UserId;
+                    return UserId.Value;
                 }
 
-                return (long) ChatId + VkMessage.ChatIdOffset;
+                return ChatId.Value + VkMessage.ChatIdOffset;
             }
         }
     }

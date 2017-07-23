@@ -78,7 +78,7 @@ namespace VkBot.Bot
             if (!IsAuthorized)
             {
                 throw new InvalidOperationException("Bot is not authorized. "
-                                                    + "Consider calling Authorize function first.");
+                                                    + "Consider calling SetAccessToken function first.");
             }
         }
 
@@ -151,15 +151,11 @@ namespace VkBot.Bot
                     ICollection<Message> unreadMessages = await Api.GetUnreadMessagesAsync();
 
                     List<Message> directMessages = unreadMessages.Where(RecievedDirectMessage).ToList();
-
                     List<Message> messagesWhereBotWasCalled = unreadMessages.Where(BotWasCalledInChat).ToList();
-
                     List<Message> messagesWhereSomeoneInChatGreeted = unreadMessages.Where(SomeoneInChatGreeted).ToList();
 
                     List<BotTask> botTasks = _mapper.Map<List<BotTask>>(messagesWhereBotWasCalled);
-
                     List<BotTask> greetingTasks = _mapper.Map<List<BotTask>>(messagesWhereSomeoneInChatGreeted);
-
                     List<BotTask> botDirectTasks = _mapper.Map<List<BotTask>>(directMessages);
 
                     Task directMessagesTasks = HandleTasksAsync(new HandleTaskArguments
