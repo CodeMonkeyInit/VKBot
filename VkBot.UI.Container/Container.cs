@@ -1,4 +1,5 @@
-﻿using VkBot.Bot;
+﻿using Microsoft.Practices.Unity;
+using VkBot.Bot;
 using VkBot.Functions;
 using VkBot.SettingsManager;
 
@@ -16,6 +17,5 @@ namespace VkBot.UI.Container
 
             return unityContainer;
         }
-        
     }
 }
