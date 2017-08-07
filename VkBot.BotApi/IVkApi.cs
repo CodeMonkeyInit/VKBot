@@ -22,5 +22,6 @@ namespace VkBot.BotApi
         bool Login(string login, string password, Func<string> twoFactorAuthFunc);
         long PostMessage(MessagesSendParams messageParams);
         User GetUser(long userId);
+        void AddEveryOneToFriendsList();
     }
 }

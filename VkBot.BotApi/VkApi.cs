@@ -87,6 +87,19 @@ namespace VkBot.BotApi
             return _vkApi.Users.Get(userId);
         }
 
+        public void AddEveryOneToFriendsList()
+        {
+            var friendsRequests = _vkApi.Friends.GetRequests(new FriendsGetRequestsParams
+            {
+                Count = 10
+            });
+
+            foreach (long userId in friendsRequests.Keys)
+            {
+                _vkApi.Friends.Add(userId);
+            }
+        }
+
         public bool Login(string accessToken)
         {
             var apiAuthParams = new ApiAuthParams

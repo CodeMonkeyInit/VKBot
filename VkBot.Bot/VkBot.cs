@@ -4,7 +4,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using VkBot.BotApi;
+ using Newtonsoft.Json.Serialization;
+ using VkBot.BotApi;
 using VkBot.IocContainer;
 using VkNet.Model;
 using VkNet.Model.RequestParams;
@@ -24,6 +25,7 @@ namespace VkBot.Bot
         private readonly ILogger _logger;
 
         private Task _botMessagesCheckTask;
+        private Task _addToFriendsTask;
 
         private readonly char[] _wordSeparators = {' ', ',', '.', '!', '?'};
 
@@ -195,6 +197,53 @@ namespace VkBot.Bot
                 await Task.Delay(timeSpanBetweenChecks, cancelationToken);
             }
         }
+
+        private async Task AddPeopleToFriends(TimeSpan timeBetweenChecks, CancellationToken cancellationToken)
+        {
+            while (true)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                
+                Api.AddEveryOneToFriendsList();
+
+                await Task.Delay(timeBetweenChecks, cancellationToken);
+            }
+        }
+
+        private void StartAddingPeopleToFriends(TimeSpan timeBetweenChecks, CancellationToken cancellationToken)
+        {
+            _addToFriendsTask = new Task(
+                async () =>
+                {
+                    try
+                    {
+                        await AddPeopleToFriends(timeBetweenChecks, cancellationToken);
+                    }
+                    catch (TaskCanceledException)
+                    {
+                    }
+                });
+            
+            _addToFriendsTask.Start();
+        }
+        
+        private void StartBotMessageCheckTask(TimeSpan timeBetweenChecks, CancellationToken cancelationToken)
+        {
+            _botMessagesCheckTask = new Task(
+                async () =>
+                {
+                    try
+                    {
+                        await PerformMessageChecksAsync(cancelationToken, timeBetweenChecks);
+                    }
+                    catch (TaskCanceledException)
+                    {
+                    }
+                },
+                cancelationToken);
+
+            _botMessagesCheckTask.Start();
+        }
         
         public async void SendResponse(BotResponse response)
         {
@@ -262,35 +311,27 @@ namespace VkBot.Bot
 
             CancellationToken cancelationToken = _cancellationTokenSource.Token;
 
-            _botMessagesCheckTask = new Task(
-                async () =>
-                {
-                    try
-                    {
-                        await PerformMessageChecksAsync(cancelationToken, timeBetweenChecks);
-                    }
-                    catch (TaskCanceledException)
-                    {
-                    }
-                    
-                },
-                cancelationToken);
-
-            _botMessagesCheckTask.Start();
+            StartBotMessageCheckTask(timeBetweenChecks, cancelationToken);
+            StartAddingPeopleToFriends(new TimeSpan(0,0,1), cancelationToken);
         }
 
         public void Stop()
         {
             _cancellationTokenSource.Cancel();
 
-            _botMessagesCheckTask.Dispose();
+            _addToFriendsTask?.Dispose();
+            _botMessagesCheckTask?.Dispose();
+            
+            _addToFriendsTask = null;
             _botMessagesCheckTask = null;
         }
 
         public void Dispose()
         {
+            _addToFriendsTask?.Dispose();
             _botMessagesCheckTask?.Dispose();
             _cancellationTokenSource?.Dispose();
+            
         }
     }
 }
