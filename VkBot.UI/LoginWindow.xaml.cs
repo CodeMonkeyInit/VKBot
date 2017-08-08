@@ -27,7 +27,7 @@ namespace VkBot.UI
         public bool DeleteCookies { get; set; }
 
         private string AutherizationUrl =
-                $"https://oauth.vk.com/authorize?client_id=6095236&display=page&redirect_uri={RedirectUri}&scope={4096 + 65536}&response_type=token&v=5.64&state=12345"
+                $"https://oauth.vk.com/authorize?client_id=6095236&display=page&redirect_uri={RedirectUri}&scope={4096 + 65536 + 2}&response_type=token&v=5.64&state=12345"
             ;
 
         public Action<string> OnTokenGained;

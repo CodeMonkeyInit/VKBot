@@ -39,8 +39,6 @@ namespace VkBot.Functions
                     };
 
                     await Task.Run(() => responseHandler(botResponse));
-
-                    return;
                 }
             }
         }

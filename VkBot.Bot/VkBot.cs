@@ -34,12 +34,13 @@ namespace VkBot.Bot
         
         private CancellationTokenSource _cancellationTokenSource;
 
-        public readonly string[] Greetings = { "привет", "здравствуйте", "прив" , "здравствуй", "хай", "hello", "hi", "ку", "дорова", "дратути", "спокойной", "пока"};
-        public readonly string[] Names = { "бот", "алеша", "алёша", "алексей", "олеша", "alosha", "ололоша", "bot" };
+        public readonly string[] Greetings = { "привет", "здравствуйте", "прив" , "здравствуй", "хай", "hello", 
+            "hi", "ку", "дорова", "дратути", "спокойной", "пока"};
+        public readonly string[] Names = { "бот", "алеша", "алёша", "алексей", 
+            "олеша", "alosha", "ололоша", "bot" };
 
         public readonly IVkApi Api;
         
-
         public bool IsAuthorized => Api.IsAuthorized;
 
         public bool BotWorking => _botMessagesCheckTask != null;

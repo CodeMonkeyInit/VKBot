@@ -27,6 +27,8 @@ namespace VkBot.BotApi
 
         private const string SearchMethodUrl = "https://api.vk.com/method/messages.search";
 
+        private const string AddEveryoneToFriendsMethodUrl = "https://api.vk.com/method/execute.addNewFriends";
+
         public IContainer Container { get; } = new Container()
             .Install(new VkApiContainerIntaller());
 
@@ -89,15 +91,13 @@ namespace VkBot.BotApi
 
         public void AddEveryOneToFriendsList()
         {
-            var friendsRequests = _vkApi.Friends.GetRequests(new FriendsGetRequestsParams
+            var addToFriendsResult = AddEveryoneToFriendsMethodUrl.PostUrlEncodedAsync(new
             {
-                Count = 10
-            });
+                access_token = _vkApi.Token,
+                v = VkNet.VkApi.VkApiVersion
+            }).ReceiveString();
 
-            foreach (long userId in friendsRequests.Keys)
-            {
-                _vkApi.Friends.Add(userId);
-            }
+            var result = addToFriendsResult.Result;
         }
 
         public bool Login(string accessToken)
